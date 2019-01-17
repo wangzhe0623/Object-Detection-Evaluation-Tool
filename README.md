@@ -12,6 +12,7 @@ calculation tool, you can do:
 ## Requirements
 - python 2.X OR python 3.X
 - python-opencv (any version)
+- matplotlib 2.2.3
 ## Input format
 coming soon :-)
 ## Usage
