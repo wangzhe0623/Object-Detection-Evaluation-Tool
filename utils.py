@@ -1,23 +1,28 @@
 # coding=utf-8
-import xml.dom.minidom
 
 
-class_map = {0:'label0', 1:'label1', 2:'label2'}
+def IntersectBBox(bbox1, bbox2):
+    intersect_bbox = []
+    if bbox2[0] >= bbox1[2] or bbox2[2] <= bbox1[0] or bbox2[1] >= bbox1[3] or bbox2[3] <= bbox1[1]:
+        # return [0, 0, 0, 0], if there is no intersection
+        return intersect_bbox
+    else:
+        intersect_bbox.append([max(bbox1[0], bbox2[0]), max(bbox1[1], bbox2[1]),
+                               min(bbox1[2], bbox2[2]), min(bbox1[3], bbox2[3])])
+    return intersect_bbox
 
 
-def parse_xml(xml_path):
-    dom = xml.dom.minidom.parse(xml_path)
-    root = dom.documentElement
-    objects = root.getElementsByTagName('object')
-    gts = []
-    for index, obj in enumerate(objects):
-        name = obj.getElementsByTagName('name')[0].firstChild.data
-        label = class_map[name]
-        bndbox = obj.getElementsByTagName('bndbox')[0]
-        x1 = int(bndbox.getElementsByTagName('xmin')[0].firstChild.data)
-        y1 = int(bndbox.getElementsByTagName('ymin')[0].firstChild.data)
-        x2 = int(bndbox.getElementsByTagName('xmax')[0].firstChild.data)
-        y2 = int(bndbox.getElementsByTagName('ymax')[0].firstChild.data)
-        gt_one = [label, x1, y1, x2, y2]
-        gts.append(gt_one)
-    return gts
+def JaccardOverlap(bbox1, bbox2):
+    intersect_bbox = IntersectBBox(bbox1, bbox2)
+    if len(intersect_bbox) == 0:
+        return 0
+    else:
+        intersect_width = int(intersect_bbox[0][2]) - int(intersect_bbox[0][0])
+        intersect_height = int(intersect_bbox[0][3]) - int(intersect_bbox[0][1])
+        if intersect_width and intersect_height > 0:
+            intersect_size = float(intersect_width) * float(intersect_height)
+            bbox1_size = float(bbox1[3] - bbox1[1]) * float(bbox1[2] - bbox1[0])
+            bbox2_size = float(bbox2[3] - bbox2[1]) * float(bbox2[2] - bbox2[0])
+            return float(intersect_size / float(bbox1_size + bbox2_size - intersect_size))
+        else:
+            return 0
