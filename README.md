@@ -1,4 +1,4 @@
-# mAp_cal
+# Object Detection evaluation tools
 Object Detection evaluation tools
 ## Introduction
 Lots of object detection algorithms used mAp(mean Average precision) as evaluation metric, and yet their mAp calculation 
