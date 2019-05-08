@@ -43,8 +43,8 @@ def parse_args():
 
 if __name__ == "__main__":
     args = parse_args()
-    args.dir = ['/Users/wangzhe/data/safe_belt/part1/prediction/', '/Users/wangzhe/data/safe_belt/part1/test_annos/']
-    args.cls = 4
+    # args.dir = ['/Users/wangzhe/data/safe_belt/part1/prediction/', '/Users/wangzhe/data/safe_belt/part1/test_annos/']
+    # args.cls = 4
     len(sys.argv)
     print ("Your Folder's path: {}".format(args.dir))
     print ("Overlap Ratio: {}".format(args.overlapRatio))
