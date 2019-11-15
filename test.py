@@ -23,7 +23,7 @@ def parse_args():
     parser.add_argument('-ratio', dest='overlapRatio', help='Should be in [0, 1], float type, which means the IOU '
                                                             'threshold, default = 0.5', default=0.5, type=float)
     parser.add_argument('-thre', dest='threshold', help='Should be in [0, 1], float type, if you need [precision] '
-                                                        ', [recall], [FPPI] or [FPPW], default = 0.5', default=0.5, type=float)
+                                                        ', [recall], [FPPI] or [FPPW], default = 0.7', default=0.6, type=float)
     parser.add_argument('-cls', dest='cls', help='Should be > 1, which means number of categories(background included),'
                                                      'default = 2', default=2, type=int)
     parser.add_argument('-prec', dest='precision', help='Should be True or False, which means return precision or not, '
@@ -43,8 +43,11 @@ def parse_args():
 
 if __name__ == "__main__":
     args = parse_args()
-    # args.dir = ['/Users/wangzhe/data/safe_belt/part1/prediction/', '/Users/wangzhe/data/safe_belt/part1/test_annos/']
-    # args.cls = 4
+    args.dir = ['/Users/wangzhe/data/zhengdanongmu/eval/voc_coco_only/converted_voc_coco_only', '/Users/wangzhe/data/zhengdanongmu/eval/voc_coco_only/gt_voc_coco']
+
+    args.cls = 4
+    args.overlapRatio = 0.5
+    args.threshold = 0.5
     len(sys.argv)
     print ("Your Folder's path: {}".format(args.dir))
     print ("Overlap Ratio: {}".format(args.overlapRatio))

@@ -37,7 +37,7 @@ class evaluation(object):
         if self.threshold < 0 or self.threshold > 1:
             print('Incorrect threshold value! It should be in [0, 1]. Please check and retry ~')
             return 0
-        pre_files = os.listdir(prediction_path)
+        pre_files = [x for x in os.listdir(prediction_path) if (x.endswith('txt') or x.endswith('xml'))]
         print ("Num of prediction files: ", len(pre_files))
         gt_files = os.listdir(gt_path)
         print ("Num of ground truth files: ", len(gt_files))
@@ -85,7 +85,7 @@ class evaluation(object):
         # scores: scores for label
         scores = []
         num_pos = 0
-        if file_format[0] == '.txt':
+        if file_format[1] == '.txt':
             gtCon = open(gtFile)
             gtLines = gtCon.readlines()
             for gtLine in gtLines:
@@ -93,11 +93,11 @@ class evaluation(object):
                     gtRects.append((int(float(gtLine.split(' ')[1])), int(float(gtLine.split(' ')[2])),
                                     int(float(gtLine.split(' ')[3])), int(float(gtLine.split(' ')[4].strip('\n')))))
                     num_pos += 1
-        elif file_format[0] == '.xml':
+        elif file_format[1] == '.xml':
             rects_xml = io_file.parse_xml(gtFile)
             for rect_xml in rects_xml:
                 if rect_xml[0] == str(label):
-                    gtRects.append((rect_xml[0], rect_xml[1], rect_xml[2], rect_xml[3]))
+                    gtRects.append((rect_xml[1], rect_xml[2], rect_xml[3], rect_xml[4]))
                     num_pos += 1
 
         detCon = open(detFile)
@@ -114,7 +114,9 @@ class evaluation(object):
         blockIdx = -1
         for cnt in range(len(det_state)):
             det_state[cnt] = (label, scores[cnt], 0, 1)
-        visited = [0] * len(gtLines)
+        # visited = [0] * len(gtLines)
+        visited = [0] * num_pos
+
         if len(detRects) != len(scores):
             print("Num of scores does not match detection results!")
         for indexDet, deti in enumerate(detRects):
@@ -141,7 +143,8 @@ class evaluation(object):
         self.fp = []
         self.all_num_pos = 0
         for groundtruth in groundtruths:
-            name = groundtruth.strip(file_format[1])
+            # name = groundtruth.strip(file_format[1])
+            name = groundtruth[:-4]
             prediction = name + file_format[0]
             if prediction not in predictions:
                 print(groundtruth, ': can not find corresponding file in prediction!')
@@ -200,7 +203,7 @@ class evaluation(object):
         fpr = []
         ap = 0
         if num == 0 or self.all_num_pos == 0:
-            return prec, rec, ap
+            return prec, rec, 'inf', 'inf', ap
 
         tp_cumsum, tp_th, tp_precision = self.CumSum_tp()
         fp_cumsum, fp_th, fppw = self.CumSum()
@@ -212,6 +215,7 @@ class evaluation(object):
             prec.append(float(tp_cumsum[i]) / float(tp_cumsum[i] + fp_cumsum[i]))
             rec.append(float(tp_cumsum[i]) / float(self.all_num_pos))
             fpr.append(float(fp_cumsum[i]) / float(tp_cumsum[i] + fp_cumsum[i]))
+            # fpr.append(float(fp_cumsum[i]))
 
         if self.roc:
             # 画roc曲线图
@@ -271,16 +275,22 @@ class evaluation(object):
     def run(self):
         prediction_path, gt_path, predictions, groundtruths, file_format = self.load_all_files()
         aps = 0
-        for label in range(1, self.cls):
-            self.get_tp_fp(gt_path, prediction_path, groundtruths, predictions, label, file_format)
-            precision, recall, fppi, fppw, ap = self.computeAp(label)
 
-            print ("class ", label, " Ap: ", ap)
+        # temp
+        class_map_temp = {1: 'Person', 2: 'Vehicle', 3: 'Dryer'}
+
+        for label in range(1, self.cls):
+            semantic_label = class_map_temp[label]
+            print('Processing label: {}'.format(semantic_label))
+            self.get_tp_fp(gt_path, prediction_path, groundtruths, predictions, semantic_label, file_format)
+            precision, recall, fppi, fppw, ap = self.computeAp(semantic_label)
+
+            print ("class ", semantic_label, " Ap: ", ap)
 
             if self.precision:
-                print("class ", label, "precision: ", precision)
+                print("class ", semantic_label, "precision: ", precision)
             if self.recall:
-                print("class ", label, "recall: ", recall)
+                print("class ", semantic_label, "recall: ", recall)
             if self.FPPIW:
                 print('FPPW: ', fppw, 'FPPI', fppi)
             aps += ap

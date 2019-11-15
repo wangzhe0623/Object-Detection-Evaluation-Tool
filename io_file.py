@@ -2,7 +2,8 @@
 import xml.dom.minidom
 
 
-class_map = {0: 'label0', 1: 'label1', 2: 'label2'}
+# modify 'class_map' as you need
+class_map = {'Person': 'Person', 'Vehicle': 'Vehicle', 'Dryer': 'Dryer'}
 
 
 def parse_xml(xml_path):
@@ -11,7 +12,7 @@ def parse_xml(xml_path):
     objects = root.getElementsByTagName('object')
     gts = []
     for index, obj in enumerate(objects):
-        name = obj.getElementsByTagName('name')[0].firstChild.data
+        name = obj.getElementsByTagName('name')[0].firstChild.data.decode('utf8')
         label = class_map[name]
         bndbox = obj.getElementsByTagName('bndbox')[0]
         x1 = int(bndbox.getElementsByTagName('xmin')[0].firstChild.data)
