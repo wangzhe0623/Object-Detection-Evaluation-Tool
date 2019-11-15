@@ -9,6 +9,9 @@ calculation tool, you can do:
 - Drawing PR curve
 - Drawing ROC curve(Done)  
 - Get FPPI(False Positive Per Image) and FPPW(False Positive Per Window) in any threshold(Done) 
+## Update
+- fix some bugs
+- sematic label name is supported now (e.g. "Person", "Car")
 ## Requirements
 - python 2.X OR python 3.X
 - python-opencv (any version)
