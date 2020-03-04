@@ -285,7 +285,7 @@ class evaluation(object):
             self.get_tp_fp(gt_path, prediction_path, groundtruths, predictions, semantic_label, file_format)
             precision, recall, fppi, fppw, ap = self.computeAp(semantic_label)
 
-            print ("class ", semantic_label, " Ap: ", ap)
+            print("class ", semantic_label, " Ap: ", ap)
 
             if self.precision:
                 print("class ", semantic_label, "precision: ", precision)
