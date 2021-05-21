@@ -10,16 +10,16 @@ calculation tool, you can do:
 - Drawing ROC curve(Done)  
 - Get FPPI(False Positive Per Image) and FPPW(False Positive Per Window) in any threshold(Done) 
 ## Update
-- fix some bugs
-- sematic label name is supported now (e.g. "Person", "Car")
+- add comments
 ## Requirements
 - python 2.X OR python 3.X
 - python-opencv (any version)
 - matplotlib 2.2.3
 ## Input format
-- TXT format, see 'sample' folder
+- TXT format, see 'sample' folder; bounding box style is 'xmin ymin xmax ymax'
 - XML format, only Pascal VOC style supported
 ## Usage
+first, modify parameters in 'evaluation.py' ('class_names') and io_file.py ('class_map') as you need
 ```shell
 python test.py --dir ./sample/prediction ./sample/test_annos --ratio 0.5 --thre 0.7
 ```
