@@ -5,14 +5,15 @@ import argparse
 
 
 cfg = {'file_dir': './',
-       'overlapRatio': 0.5,
-       'cls': 2,
-       'presicion': False,
-       'recall': False,
-       'threshold': 0.5,
-       'FPPIW': False,
-       'roc': False,
-       'pr': False}
+       'overlapRatio': 0.5,  # iou between predicted bounding box and ground truth bounding box
+       'cls': 2,  # background id included
+       'precision': False,  # calculate precision with 'threshold' or not
+       'recall': False,  # calculate precision with 'threshold' or not
+       'threshold': 0.5,  # confidence threshold used in calculating precision and recall
+       'FPPIW': False,  # FPPI: false positive per image; FPPW: false positive per window(bounding box)
+       'roc': False,  # draw roc curve or not
+       'pr': False  # draw pr curve or not
+        }
 
 
 def parse_args():
@@ -43,19 +44,20 @@ def parse_args():
 
 if __name__ == "__main__":
     args = parse_args()
-    args.dir = ['/Users/wangzhe/data/zhengdanongmu/eval/voc_coco_only/converted_voc_coco_only', '/Users/wangzhe/data/zhengdanongmu/eval/voc_coco_only/gt_voc_coco']
+    args.dir = ['/data/guanlang/video_clips/metric_used_xml/face_pred_txt',  # prediction path
+                '/data/guanlang/video_clips/metric_used_xml/gt']  # gt path
 
-    args.cls = 4
-    args.overlapRatio = 0.5
-    args.threshold = 0.5
+    # args.cls = 2
+    # args.overlapRatio = 0.3
+    # args.threshold = 0.94
     len(sys.argv)
-    print ("Your Folder's path: {}".format(args.dir))
-    print ("Overlap Ratio: {}".format(args.overlapRatio))
-    print ("Threshold: {}".format(args.threshold))
-    print ("Num of Categories: {}".format(args.cls))
-    print ("Precision: {}".format(args.precision))
-    print ("Recall: {}".format(args.recall))
-    print ("FPPIW: {}".format(args.FPPIW))
+    print("Your Folder's path: {}".format(args.dir))
+    print("Overlap Ratio: {}".format(args.overlapRatio))
+    print("Threshold: {}".format(args.threshold))
+    print("Num of Categories: {}".format(args.cls))
+    print("Precision: {}".format(args.precision))
+    print("Recall: {}".format(args.recall))
+    print("FPPIW: {}".format(args.FPPIW))
 
     print("Calculating......")
 

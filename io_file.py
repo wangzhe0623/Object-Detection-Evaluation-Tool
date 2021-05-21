@@ -3,16 +3,24 @@ import xml.dom.minidom
 
 
 # modify 'class_map' as you need
-class_map = {'Person': 'Person', 'Vehicle': 'Vehicle', 'Dryer': 'Dryer'}
+#           {id or label name in gt label: class name}
+class_map = {'face': 'face'}
 
 
+# parse pascal voc style label file
 def parse_xml(xml_path):
-    dom = xml.dom.minidom.parse(xml_path)
+    gts = []
+    try:
+        dom = xml.dom.minidom.parse(xml_path)
+        print('{} parse failed! Use empty label instead \n'.format(xml_path))
+    except:
+        return gts
     root = dom.documentElement
     objects = root.getElementsByTagName('object')
-    gts = []
     for index, obj in enumerate(objects):
-        name = obj.getElementsByTagName('name')[0].firstChild.data.decode('utf8')
+        name = obj.getElementsByTagName('name')[0].firstChild.data.strip("\ufeff")
+        if name not in class_map:
+            continue
         label = class_map[name]
         bndbox = obj.getElementsByTagName('bndbox')[0]
         x1 = int(bndbox.getElementsByTagName('xmin')[0].firstChild.data)

@@ -38,11 +38,11 @@ class evaluation(object):
             print('Incorrect threshold value! It should be in [0, 1]. Please check and retry ~')
             return 0
         pre_files = [x for x in os.listdir(prediction_path) if (x.endswith('txt') or x.endswith('xml'))]
-        print ("Num of prediction files: ", len(pre_files))
+        print("Num of prediction files: ", len(pre_files))
         gt_files = os.listdir(gt_path)
-        print ("Num of ground truth files: ", len(gt_files))
+        print("Num of ground truth files: ", len(gt_files))
         if len(pre_files) != len(gt_files):
-            print("groundtruths' size does not match predictions' size， please check ~ ")
+            print("ground truths' size does not match predictions' size, please check ~ ")
             return 0
         elif len(pre_files) < 1:
             print('No files! Please check~')
@@ -226,11 +226,11 @@ class evaluation(object):
             plt.ylabel('recall')
             plt.draw()  # 显示绘图
             # plt.pause(5)  # 显示5秒
-            plt.savefig("class_{}_roc.jpg".format(label))  # 保存图象
+            plt.savefig("class_{}_roc.png".format(label))  # 保存图象
             plt.close()
 
         if self.pr:
-            # 画roc曲线图
+            # 画pr曲线图
             plt.figure('Draw_pr')
             plt.plot(rec, prec)  # plot绘制折线图
             plt.grid(True)
@@ -238,7 +238,7 @@ class evaluation(object):
             plt.ylabel('precision')
             plt.draw()  # 显示绘图
             # plt.pause(5)  # 显示5秒
-            plt.savefig("class_{}_pr.jpg".format(label))  # 保存图象
+            plt.savefig("class_{}_pr.png".format(label))  # 保存图象
             plt.close()
 
         fppi = 0
@@ -276,11 +276,12 @@ class evaluation(object):
         prediction_path, gt_path, predictions, groundtruths, file_format = self.load_all_files()
         aps = 0
 
-        # temp
-        class_map_temp = {1: 'Person', 2: 'Vehicle', 3: 'Dryer'}
+        # modify as you need
+        # list your label names as below ['class 1', 'class 2'......]
+        class_names = ['face']
 
-        for label in range(1, self.cls):
-            semantic_label = class_map_temp[label]
+        for label in class_names:
+            semantic_label = label
             print('Processing label: {}'.format(semantic_label))
             self.get_tp_fp(gt_path, prediction_path, groundtruths, predictions, semantic_label, file_format)
             precision, recall, fppi, fppw, ap = self.computeAp(semantic_label)
@@ -294,8 +295,9 @@ class evaluation(object):
             if self.FPPIW:
                 print('FPPW: ', fppw, 'FPPI', fppi)
             aps += ap
+
         mAp = aps / (self.cls - 1)
-        print ("mAp: ", mAp)
+        print("mAp: ", mAp)
 
         return 0
 
